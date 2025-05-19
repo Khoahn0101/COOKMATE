@@ -5,19 +5,25 @@ const recipes = [
     title: "Homemade Pizza",
     time: "45 mins",
     difficulty: "Medium",
-    image: "https://images.unsplash.com/photo-1601924582975-4aa3b5b1d1b4",
+    image: "https://static.wixstatic.com/media/425567_2c6bff493fd5449786b2196b1441b87b~mv2.jpg/v1/fill/w_640,h_400,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/425567_2c6bff493fd5449786b2196b1441b87b~mv2.jpg",
+    height: 800,
+    width : 800
   },
   {
     title: "Chicken Curry",
     time: "30 mins",
     difficulty: "Easy",
-    image: "https://images.unsplash.com/photo-1589307000057-cb6395f44703",
+    image: "https://static.wixstatic.com/media/425567_2c6bff493fd5449786b2196b1441b87b~mv2.jpg/v1/fill/w_640,h_400,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/425567_2c6bff493fd5449786b2196b1441b87b~mv2.jpg",
+    height: 800,
+    width : 800
   },
   {
     title: "Chocolate Cake",
     time: "60 mins",
     difficulty: "Hard",
-    image: "https://images.unsplash.com/photo-1608139742805-5ae7d7b3ed7e",
+    image: "https://static.wixstatic.com/media/425567_2c6bff493fd5449786b2196b1441b87b~mv2.jpg/v1/fill/w_640,h_400,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/425567_2c6bff493fd5449786b2196b1441b87b~mv2.jpg",
+    height: 800,
+    width : 800
   },
 ];
 
@@ -61,7 +67,7 @@ export default function CookMateApp() {
         <div className="grid md:grid-cols-3 gap-6 px-4 max-w-6xl mx-auto">
           {recipes.map((recipe) => (
             <div key={recipe.title} className="bg-white rounded-xl shadow p-4">
-              <img src={recipe.image} alt={recipe.title} className="rounded-xl h-48 w-full object-cover mb-4" />
+              <img src={recipe.image} alt={recipe.title} style={{ height: recipe.height, width: recipe.width }} className="rounded-xl h-48 w-full object-cover mb-4" />
               <h3 className="text-xl font-bold mb-1">{recipe.title}</h3>
               <p className="text-gray-600 text-sm">
                 {recipe.time} &middot; {recipe.difficulty}
