@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import * as echarts from "echarts";
+import { useNavigate } from "react-router-dom";
 
 const RecipeDetail = ({ recipe, onBack }) => {
   const [servings, setServings] = useState(recipe.servings || 1);
   const [activeReviewTab, setActiveReviewTab] = useState("most-helpful");
   const [checkedIngredients, setCheckedIngredients] = useState([]);
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Toggle ingredient checked state
   const toggleIngredient = (index) => {
@@ -58,24 +61,34 @@ const RecipeDetail = ({ recipe, onBack }) => {
     }
   }, [recipe.nutrition]);
 
+  const onSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-neutral-50">
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-100">
         <div className="flex items-center">
           <button onClick={onBack} className="mr-4 text-gray-600 cursor-pointer">
             <i className="fas fa-arrow-left"></i>
           </button>
-          <div className="text-2xl font-bold text-blue-600 cursor-pointer">
+          <button
+            className="text-2xl font-bold text-blue-600 cursor-pointer bg-transparent border-none p-0 m-0"
+            onClick={() => navigate("/")}
+            style={{ background: 'none' }}
+            aria-label="Go to home"
+          >
             CookMate
-          </div>
+          </button>
         </div>
         <div className="relative flex-1 max-w-md mx-6">
           <input
             type="text"
             placeholder="Search recipes..."
             className="w-full py-2 pl-4 pr-10 text-sm bg-gray-100 border-none rounded-full focus:outline-none focus:ring-2 focus:ring-blue-300"
-            disabled
+            value={searchTerm || ''}
+            onChange={onSearchChange}
           />
           <button className="absolute inset-y-0 right-0 flex items-center px-3 cursor-pointer !rounded-button whitespace-nowrap">
             <i className="fas fa-search text-gray-500"></i>
@@ -95,6 +108,15 @@ const RecipeDetail = ({ recipe, onBack }) => {
       </header>
       {/* Main Content */}
       <main className="container px-6 py-8 mx-auto">
+        {/* Upload Your Recipe Button */}
+        <div className="flex justify-end mb-4">
+          <button
+            className="px-5 py-2 text-sm font-medium text-white bg-[#7CD681] rounded-full shadow hover:bg-green-500 transition"
+            onClick={() => navigate('/upload')}
+          >
+            Upload Your Recipe
+          </button>
+        </div>
         {/* Hero Section */}
         <div className="relative mb-10 overflow-hidden rounded-xl">
           <img
@@ -355,18 +377,6 @@ const RecipeDetail = ({ recipe, onBack }) => {
         {/* Related Recipes (placeholder) */}
         {/* ... You can add related recipes here if desired ... */}
       </main>
-      {/* Floating Action Buttons */}
-      <div className="fixed z-10 bottom-6 right-6">
-        <button className="flex items-center justify-center w-12 h-12 text-white bg-indigo-600 rounded-full shadow-lg cursor-pointer !rounded-button whitespace-nowrap">
-          <i className="fas fa-arrow-up"></i>
-        </button>
-      </div>
-      {/* Chat Support Button */}
-      <div className="fixed z-10 bottom-6 left-6">
-        <button className="flex items-center justify-center w-12 h-12 text-white bg-indigo-600 rounded-full shadow-lg cursor-pointer !rounded-button whitespace-nowrap">
-          <i className="fas fa-comment"></i>
-        </button>
-      </div>
     </div>
   );
 };

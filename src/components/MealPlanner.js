@@ -32,9 +32,8 @@ const allRecipes = [
   },
 ];
 
-const MealPlanner = () => {
+const MealPlanner = ({ activeTab, setActiveTab }) => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("planner");
   const [activeDay, setActiveDay] = useState("monday");
   const [activePlanType, setActivePlanType] = useState("weekly");
   const [ingredients, setIngredients] = useState([
@@ -112,26 +111,17 @@ const MealPlanner = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-neutral-50">
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-100">
-        <div className="text-2xl font-bold text-blue-600 cursor-pointer">
+        <button
+          className="text-2xl font-bold text-blue-600 cursor-pointer bg-transparent border-none p-0 m-0"
+          onClick={() => navigate("/")}
+          style={{ background: 'none' }}
+          aria-label="Go to home"
+        >
           CookMate
-        </div>
-        <div className="flex gap-2">
-          <button
-            className="px-4 py-2 text-sm font-medium text-indigo-600 bg-white border border-indigo-600 rounded-full cursor-pointer"
-            onClick={() => navigate("/")}
-          >
-            Recipe Gallery
-          </button>
-          <button
-            className="px-4 py-2 text-sm font-medium text-indigo-600 bg-white border border-indigo-600 rounded-full cursor-pointer"
-            onClick={() => navigate("/planner")}
-          >
-            Meal Planner
-          </button>
-        </div>
+        </button>
         <div className="relative flex-1 max-w-md mx-6">
           <input
             type="text"
@@ -149,7 +139,7 @@ const MealPlanner = () => {
               <i className="ml-1 fas fa-chevron-down text-xs"></i>
             </button>
           </div>
-          <button className="px-5 py-2 text-sm font-medium text-white bg-indigo-600 rounded-full cursor-pointer !rounded-button whitespace-nowrap">
+          <button className="px-5 py-2 text-sm font-medium text-white bg-indigo-600 rounded-full cursor-pointer !rounded-button whitespace-nowrap" onClick={() => navigate('/login')}>
             Sign in
           </button>
         </div>
@@ -167,15 +157,6 @@ const MealPlanner = () => {
 
         {/* Navigation Tabs */}
         <div className="flex mb-6 space-x-4 overflow-x-auto">
-          <button
-            className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeTab === "all" ? "bg-gray-200 text-gray-800" : "bg-gray-100 text-gray-600"}`}
-            onClick={() => {
-              setActiveTab("all");
-              navigate("/");
-            }}
-          >
-            All
-          </button>
           <button
             className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeTab === "recipe" ? "bg-gray-200 text-gray-800" : "bg-gray-100 text-gray-600"}`}
             onClick={() => {
@@ -195,8 +176,11 @@ const MealPlanner = () => {
             Meal Planner
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeTab === "upload" ? "bg-gray-200 text-gray-800" : "bg-gray-100 text-gray-600"}`}
-            onClick={() => setActiveTab("upload")}
+            className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeTab === "upload" ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-600"}`}
+            onClick={() => {
+              setActiveTab("upload");
+              navigate("/upload");
+            }}
           >
             Upload Your Recipe
           </button>
@@ -234,7 +218,7 @@ const MealPlanner = () => {
             "friday",
             "saturday",
             "sunday",
-            "aboutyou",
+            "about you",
           ].map((day) => (
             <button
               key={day}

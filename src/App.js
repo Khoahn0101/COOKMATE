@@ -3,6 +3,10 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from "react-router-dom";
 import RecipeDetail from "./components/RecipeDetail";
 import MealPlanner from "./components/MealPlanner";
+import CookBotInput from "./components/CookBotInput";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import UploadRecipe from "./components/UploadRecipe";
 
 const recipes = [
   {
@@ -313,16 +317,213 @@ const recipes = [
       carbs: "38g"
     }
   },
+  {
+    id: 10,
+    title: "Lasagna",
+    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80",
+    rating: "4.7",
+    reviews: 95,
+    prepTime: "30 mins",
+    cookingTime: "1 hr",
+    difficulty: "Hard",
+    servings: 6,
+    tags: ["Italian", "Main Course", "Cheesy"],
+    description: "Classic Italian lasagna with layers of pasta, meat sauce, and cheese.",
+    ingredients: [
+      "12 lasagna noodles",
+      "1 lb ground beef",
+      "2 cups ricotta cheese",
+      "2 cups mozzarella cheese",
+      "2 cups marinara sauce",
+      "1/2 cup grated parmesan",
+      "1 egg",
+      "Salt and pepper"
+    ],
+    instructions: [
+      "Cook noodles, brown beef, mix cheeses with egg.",
+      "Layer noodles, meat, cheese, and sauce.",
+      "Bake at 375°F for 45 minutes."
+    ],
+    nutrition: {
+      calories: 850,
+      protein: "38g",
+      fat: "42g",
+      carbs: "70g"
+    }
+  },
+  {
+    id: 11,
+    title: "Pad Thai",
+    image: "https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=800&q=80",
+    rating: "4.8",
+    reviews: 120,
+    prepTime: "20 mins",
+    cookingTime: "15 mins",
+    difficulty: "Medium",
+    servings: 2,
+    tags: ["Asian", "Main Course", "Noodles"],
+    description: "Popular Thai stir-fried noodles with shrimp, tofu, and peanuts.",
+    ingredients: [
+      "200g rice noodles",
+      "100g shrimp",
+      "1 egg",
+      "50g tofu",
+      "2 tbsp fish sauce",
+      "1 tbsp tamarind paste",
+      "2 tbsp peanuts",
+      "Bean sprouts"
+    ],
+    instructions: [
+      "Soak noodles, stir-fry shrimp and tofu.",
+      "Add egg, noodles, sauces, and toss.",
+      "Top with peanuts and sprouts."
+    ],
+    nutrition: {
+      calories: 600,
+      protein: "28g",
+      fat: "18g",
+      carbs: "80g"
+    }
+  },
+  {
+    id: 12,
+    title: "Butter Chicken",
+    image: "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=800&q=80",
+    rating: "4.9",
+    reviews: 140,
+    prepTime: "25 mins",
+    cookingTime: "35 mins",
+    difficulty: "Medium",
+    servings: 4,
+    tags: ["Indian", "Main Course", "Spicy"],
+    description: "Creamy tomato-based chicken curry, a North Indian favorite.",
+    ingredients: [
+      "500g chicken breast",
+      "1 cup tomato puree",
+      "1/2 cup cream",
+      "2 tbsp butter",
+      "2 tbsp garam masala",
+      "1 onion, chopped",
+      "2 cloves garlic, minced"
+    ],
+    instructions: [
+      "Marinate and cook chicken.",
+      "Prepare sauce with tomato, cream, and spices.",
+      "Combine and simmer."
+    ],
+    nutrition: {
+      calories: 700,
+      protein: "40g",
+      fat: "38g",
+      carbs: "30g"
+    }
+  },
+  {
+    id: 13,
+    title: "Classic Burger",
+    image: "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=80",
+    rating: "4.5",
+    reviews: 110,
+    prepTime: "10 mins",
+    cookingTime: "15 mins",
+    difficulty: "Easy",
+    servings: 1,
+    tags: ["American", "Main Course", "Beef"],
+    description: "Juicy grilled beef burger with lettuce, tomato, and cheese.",
+    ingredients: [
+      "1 beef patty",
+      "1 burger bun",
+      "1 slice cheddar cheese",
+      "Lettuce",
+      "Tomato",
+      "Onion",
+      "Ketchup, mustard"
+    ],
+    instructions: [
+      "Grill patty, toast bun.",
+      "Assemble with toppings and condiments."
+    ],
+    nutrition: {
+      calories: 550,
+      protein: "28g",
+      fat: "30g",
+      carbs: "40g"
+    }
+  },
+  {
+    id: 14,
+    title: "Vegetarian Chili",
+    image: "https://images.unsplash.com/photo-1504674900247-ec6b0b1b798e?auto=format&fit=crop&w=800&q=80",
+    rating: "4.6",
+    reviews: 85,
+    prepTime: "15 mins",
+    cookingTime: "40 mins",
+    difficulty: "Easy",
+    servings: 4,
+    tags: ["American", "Vegetarian", "Main Course"],
+    description: "Hearty chili with beans, tomatoes, and spices. 100% vegetarian!",
+    ingredients: [
+      "1 can kidney beans",
+      "1 can black beans",
+      "1 can diced tomatoes",
+      "1 onion, chopped",
+      "2 cloves garlic, minced",
+      "2 tbsp chili powder",
+      "1 bell pepper, chopped"
+    ],
+    instructions: [
+      "Sauté onion, garlic, and pepper.",
+      "Add beans, tomatoes, and spices.",
+      "Simmer for 30 minutes."
+    ],
+    nutrition: {
+      calories: 320,
+      protein: "12g",
+      fat: "4g",
+      carbs: "60g"
+    }
+  },
+  {
+    id: 15,
+    title: "Vegan Buddha Bowl",
+    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    rating: "4.8",
+    reviews: 75,
+    prepTime: "20 mins",
+    cookingTime: "0 mins",
+    difficulty: "Easy",
+    servings: 2,
+    tags: ["Vegan", "Healthy", "Asian", "Bowl"],
+    description: "Colorful bowl with quinoa, chickpeas, veggies, and tahini dressing.",
+    ingredients: [
+      "1 cup cooked quinoa",
+      "1/2 cup chickpeas",
+      "1/2 cup shredded carrots",
+      "1/2 cup edamame",
+      "1/2 avocado",
+      "Tahini dressing"
+    ],
+    instructions: [
+      "Arrange all ingredients in a bowl.",
+      "Drizzle with tahini dressing."
+    ],
+    nutrition: {
+      calories: 400,
+      protein: "14g",
+      fat: "12g",
+      carbs: "60g"
+    }
+  },
   
   // Add more recipes here...
 ];
 
-const RecipeGallery = ({ activeTab, setActiveTab, activeCuisine, setActiveCuisine }) => {
+const RecipeGallery = ({ activeTab, setActiveTab, activeCuisine, setActiveCuisine, searchTerm, onSearchChange, recipes }) => {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-neutral-50">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+      <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-100">
         <div className="text-2xl font-bold text-blue-600 cursor-pointer">
           CookMate
         </div>
@@ -331,6 +532,8 @@ const RecipeGallery = ({ activeTab, setActiveTab, activeCuisine, setActiveCuisin
             type="text"
             placeholder="Search recipes..."
             className="w-full py-2 pl-4 pr-10 text-sm bg-gray-100 border-none rounded-full focus:outline-none focus:ring-2 focus:ring-blue-300"
+            value={searchTerm}
+            onChange={onSearchChange}
           />
           <button className="absolute inset-y-0 right-0 flex items-center px-3 cursor-pointer !rounded-button whitespace-nowrap">
             <i className="fas fa-search text-gray-500"></i>
@@ -343,7 +546,7 @@ const RecipeGallery = ({ activeTab, setActiveTab, activeCuisine, setActiveCuisin
               <i className="ml-1 fas fa-chevron-down text-xs"></i>
             </button>
           </div>
-          <button className="px-5 py-2 text-sm font-medium text-white bg-indigo-600 rounded-full cursor-pointer !rounded-button whitespace-nowrap">
+          <button className="px-5 py-2 text-sm font-medium text-white bg-indigo-600 rounded-full cursor-pointer !rounded-button whitespace-nowrap" onClick={() => navigate('/login')}>
             Sign in
           </button>
         </div>
@@ -360,14 +563,11 @@ const RecipeGallery = ({ activeTab, setActiveTab, activeCuisine, setActiveCuisin
         {/* Navigation Tabs */}
         <div className="flex mb-6 space-x-4 overflow-x-auto">
           <button
-            className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeTab === "all" ? "bg-gray-200 text-gray-800" : "bg-gray-100 text-gray-600"}`}
-            onClick={() => setActiveTab("all")}
-          >
-            All
-          </button>
-          <button
             className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeTab === "recipe" ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-600"}`}
-            onClick={() => setActiveTab("recipe")}
+            onClick={() => {
+              setActiveTab("recipe");
+              navigate("/");
+            }}
           >
             Recipe Gallery
           </button>
@@ -381,8 +581,11 @@ const RecipeGallery = ({ activeTab, setActiveTab, activeCuisine, setActiveCuisin
             Meal Planner
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeTab === "upload" ? "bg-gray-200 text-gray-800" : "bg-gray-100 text-gray-600"}`}
-            onClick={() => setActiveTab("upload")}
+            className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeTab === "upload" ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-600"}`}
+            onClick={() => {
+              setActiveTab("upload");
+              navigate("/upload");
+            }}
           >
             Upload Your Recipe
           </button>
@@ -422,37 +625,41 @@ const RecipeGallery = ({ activeTab, setActiveTab, activeCuisine, setActiveCuisin
         </div>
         {/* Recipe Grid */}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {recipes.map((recipe) => (
-            <div key={recipe.id} className="overflow-hidden bg-white rounded-lg shadow-md">
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={recipe.image}
-                  alt={recipe.title}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              <div className="p-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold">{recipe.title}</h3>
-                  <div className="flex items-center">
-                    <i className="text-yellow-400 fas fa-star"></i>
-                    <span className="ml-1 text-sm text-gray-600">{recipe.rating}</span>
+          {recipes.length === 0 ? (
+            <div className="col-span-full text-center text-gray-400 py-12 text-lg">No recipes found for this cuisine.</div>
+          ) : (
+            recipes.map((recipe) => (
+              <div key={recipe.id} className="overflow-hidden bg-white rounded-lg shadow-md">
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src={recipe.image}
+                    alt={recipe.title}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+                <div className="p-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-bold">{recipe.title}</h3>
+                    <div className="flex items-center">
+                      <i className="text-yellow-400 fas fa-star"></i>
+                      <span className="ml-1 text-sm text-gray-600">{recipe.rating}</span>
+                    </div>
                   </div>
+                  <div className="flex items-center mt-2 text-sm text-gray-500">
+                    <span>{recipe.cookingTime}</span>
+                    <span className="mx-2">•</span>
+                    <span>{recipe.difficulty}</span>
+                  </div>
+                  <button
+                    onClick={() => navigate(`/recipe/${recipe.id}`)}
+                    className="w-full py-2 mt-4 text-sm font-medium text-white bg-indigo-600 rounded-md cursor-pointer !rounded-button whitespace-nowrap"
+                  >
+                    View Recipe
+                  </button>
                 </div>
-                <div className="flex items-center mt-2 text-sm text-gray-500">
-                  <span>{recipe.cookingTime}</span>
-                  <span className="mx-2">•</span>
-                  <span>{recipe.difficulty}</span>
-                </div>
-                <button
-                  onClick={() => navigate(`/recipe/${recipe.id}`)}
-                  className="w-full py-2 mt-4 text-sm font-medium text-white bg-indigo-600 rounded-md cursor-pointer !rounded-button whitespace-nowrap"
-                >
-                  View Recipe
-                </button>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </main>
       {/* Chat Support Button */}
@@ -476,6 +683,21 @@ const RecipeDetailWrapper = () => {
 const App = () => {
   const [activeTab, setActiveTab] = useState("recipe");
   const [activeCuisine, setActiveCuisine] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Filter recipes by cuisine and search term
+  const filteredRecipes = recipes.filter(recipe => {
+    // Cuisine filter
+    const cuisineMatch =
+      activeCuisine === "all" ||
+      (recipe.tags && recipe.tags.map(t => t.toLowerCase()).includes(activeCuisine));
+    // Search filter
+    const searchMatch = recipe.title.toLowerCase().includes(searchTerm.toLowerCase());
+    return cuisineMatch && searchMatch;
+  });
+
+  const onSearchChange = (e) => setSearchTerm(e.target.value);
+
   return (
     <Router>
       <Routes>
@@ -487,12 +709,19 @@ const App = () => {
               setActiveTab={setActiveTab}
               activeCuisine={activeCuisine}
               setActiveCuisine={setActiveCuisine}
+              searchTerm={searchTerm}
+              onSearchChange={onSearchChange}
+              recipes={filteredRecipes}
             />
           }
         />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/recipe/:id" element={<RecipeDetailWrapper />} />
-        <Route path="/planner" element={<MealPlanner />} />
+        <Route path="/planner" element={<MealPlanner activeTab={activeTab} setActiveTab={setActiveTab} />} />
+        <Route path="/upload" element={<UploadRecipe />} />
       </Routes>
+      <CookBotInput />
     </Router>
   );
 };
