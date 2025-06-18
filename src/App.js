@@ -7,6 +7,7 @@ import CookBotInput from "./components/CookBotInput";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import UploadRecipe from "./components/UploadRecipe";
+import Home from "./Home";
 
 const recipes = [
   {
@@ -518,160 +519,6 @@ const recipes = [
   // Add more recipes here...
 ];
 
-const RecipeGallery = ({ activeTab, setActiveTab, activeCuisine, setActiveCuisine, searchTerm, onSearchChange, recipes }) => {
-  const navigate = useNavigate();
-  return (
-    <div className="min-h-screen bg-neutral-50">
-      {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-100">
-        <div className="text-2xl font-bold text-blue-600 cursor-pointer">
-          CookMate
-        </div>
-        <div className="relative flex-1 max-w-md mx-6">
-          <input
-            type="text"
-            placeholder="Search recipes..."
-            className="w-full py-2 pl-4 pr-10 text-sm bg-gray-100 border-none rounded-full focus:outline-none focus:ring-2 focus:ring-blue-300"
-            value={searchTerm}
-            onChange={onSearchChange}
-          />
-          <button className="absolute inset-y-0 right-0 flex items-center px-3 cursor-pointer !rounded-button whitespace-nowrap">
-            <i className="fas fa-search text-gray-500"></i>
-          </button>
-        </div>
-        <div className="flex items-center space-x-4">
-          <div className="relative cursor-pointer">
-            <button className="flex items-center px-3 py-2 text-sm bg-gray-100 rounded-full cursor-pointer !rounded-button whitespace-nowrap">
-              <span>EN</span>
-              <i className="ml-1 fas fa-chevron-down text-xs"></i>
-            </button>
-          </div>
-          <button className="px-5 py-2 text-sm font-medium text-white bg-indigo-600 rounded-full cursor-pointer !rounded-button whitespace-nowrap" onClick={() => navigate('/login')}>
-            Sign in
-          </button>
-        </div>
-      </header>
-      {/* Main Content */}
-      <main className="container px-6 py-8 mx-auto">
-        {/* Page Title */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Recipe Gallery</h1>
-          <p className="mt-2 text-gray-600">
-            Browse our collection of delicious recipes
-          </p>
-        </div>
-        {/* Navigation Tabs */}
-        <div className="flex mb-6 space-x-4 overflow-x-auto">
-          <button
-            className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeTab === "recipe" ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-600"}`}
-            onClick={() => {
-              setActiveTab("recipe");
-              navigate("/");
-            }}
-          >
-            Recipe Gallery
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeTab === "planner" ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-600"}`}
-            onClick={() => {
-              setActiveTab("planner");
-              navigate("/planner");
-            }}
-          >
-            Meal Planner
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeTab === "upload" ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-600"}`}
-            onClick={() => {
-              setActiveTab("upload");
-              navigate("/upload");
-            }}
-          >
-            Upload Your Recipe
-          </button>
-        </div>
-        {/* Cuisine Filters */}
-        <div className="flex mb-8 space-x-3 overflow-x-auto">
-          <button
-            className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeCuisine === "all" ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-600"}`}
-            onClick={() => setActiveCuisine("all")}
-          >
-            All
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeCuisine === "italian" ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-600"}`}
-            onClick={() => setActiveCuisine("italian")}
-          >
-            Italian
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeCuisine === "asian" ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-600"}`}
-            onClick={() => setActiveCuisine("asian")}
-          >
-            Asian
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeCuisine === "indian" ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-600"}`}
-            onClick={() => setActiveCuisine("indian")}
-          >
-            Indian
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium rounded-full cursor-pointer !rounded-button whitespace-nowrap ${activeCuisine === "american" ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-600"}`}
-            onClick={() => setActiveCuisine("american")}
-          >
-            American
-          </button>
-        </div>
-        {/* Recipe Grid */}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {recipes.length === 0 ? (
-            <div className="col-span-full text-center text-gray-400 py-12 text-lg">No recipes found for this cuisine.</div>
-          ) : (
-            recipes.map((recipe) => (
-              <div key={recipe.id} className="overflow-hidden bg-white rounded-lg shadow-md">
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={recipe.image}
-                    alt={recipe.title}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                <div className="p-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-bold">{recipe.title}</h3>
-                    <div className="flex items-center">
-                      <i className="text-yellow-400 fas fa-star"></i>
-                      <span className="ml-1 text-sm text-gray-600">{recipe.rating}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center mt-2 text-sm text-gray-500">
-                    <span>{recipe.cookingTime}</span>
-                    <span className="mx-2">•</span>
-                    <span>{recipe.difficulty}</span>
-                  </div>
-                  <button
-                    onClick={() => navigate(`/recipe/${recipe.id}`)}
-                    className="w-full py-2 mt-4 text-sm font-medium text-white bg-indigo-600 rounded-md cursor-pointer !rounded-button whitespace-nowrap"
-                  >
-                    View Recipe
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </main>
-      {/* Chat Support Button */}
-      <div className="fixed bottom-6 right-6">
-        <button className="flex items-center justify-center w-12 h-12 text-white bg-indigo-600 rounded-full shadow-lg cursor-pointer !rounded-button whitespace-nowrap">
-          <i className="fas fa-comment"></i>
-        </button>
-      </div>
-    </div>
-  );
-};
-
 const RecipeDetailWrapper = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -681,44 +528,17 @@ const RecipeDetailWrapper = () => {
 };
 
 const App = () => {
-  const [activeTab, setActiveTab] = useState("recipe");
-  const [activeCuisine, setActiveCuisine] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
-
-  // Filter recipes by cuisine and search term
-  const filteredRecipes = recipes.filter(recipe => {
-    // Cuisine filter
-    const cuisineMatch =
-      activeCuisine === "all" ||
-      (recipe.tags && recipe.tags.map(t => t.toLowerCase()).includes(activeCuisine));
-    // Search filter
-    const searchMatch = recipe.title.toLowerCase().includes(searchTerm.toLowerCase());
-    return cuisineMatch && searchMatch;
-  });
-
-  const onSearchChange = (e) => setSearchTerm(e.target.value);
-
   return (
     <Router>
       <Routes>
         <Route
           path="/"
-          element={
-            <RecipeGallery
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              activeCuisine={activeCuisine}
-              setActiveCuisine={setActiveCuisine}
-              searchTerm={searchTerm}
-              onSearchChange={onSearchChange}
-              recipes={filteredRecipes}
-            />
-          }
+          element={<Home />}
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/recipe/:id" element={<RecipeDetailWrapper />} />
-        <Route path="/planner" element={<MealPlanner activeTab={activeTab} setActiveTab={setActiveTab} />} />
+        <Route path="/meal-planner" element={<MealPlanner />} />
         <Route path="/upload" element={<UploadRecipe />} />
       </Routes>
       <CookBotInput />

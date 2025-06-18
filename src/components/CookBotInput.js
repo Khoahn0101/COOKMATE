@@ -38,18 +38,18 @@ const CookBotInput = () => {
     <>
       {/* Floating Button */}
       <button
-        className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 text-white bg-[#4318D1] rounded-full shadow-lg cursor-pointer hover:bg-indigo-700 focus:outline-none"
+        className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-16 h-16 text-white bg-gradient-to-br from-blue-600 to-indigo-500 rounded-full shadow-2xl cursor-pointer hover:scale-105 hover:shadow-indigo-400 transition-all duration-200"
         onClick={() => setOpen(true)}
         aria-label="Open CookBot"
+        style={{ boxShadow: '0 8px 32px 0 rgba(67,24,209,0.25)' }}
       >
-        {/* Chat SVG Icon */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth={2}
           stroke="currentColor"
-          className="w-7 h-7"
+          className="w-8 h-8"
         >
           <path
             strokeLinecap="round"
@@ -61,7 +61,7 @@ const CookBotInput = () => {
 
       {/* Chat Widget Panel */}
       {open && (
-        <div className="fixed bottom-6 right-6 z-50 w-96 max-w-full h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col border border-gray-200">
+        <div className="fixed bottom-6 right-6 z-50 w-96 max-w-full h-[500px] bg-gradient-to-br from-blue-50 to-white rounded-2xl shadow-2xl flex flex-col border border-blue-100 animate-fadeInSlideUp">
           {/* Close Button */}
           <button
             className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-xl"
@@ -72,24 +72,24 @@ const CookBotInput = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          {/* Purple Sidebar */}
-          <div className="absolute left-0 top-0 h-full w-2 bg-indigo-700 rounded-l-2xl"></div>
+          {/* Blue Sidebar */}
+          <div className="absolute left-0 top-0 h-full w-2 bg-gradient-to-b from-blue-600 to-indigo-500 rounded-l-2xl"></div>
           {/* Header */}
           <div className="flex items-center gap-3 px-6 pt-6 pb-2">
-            <div className="w-10 h-10 flex items-center justify-center bg-indigo-700 rounded-full">
-              <i className="fas fa-robot text-white text-xl"></i>
+            <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-500 rounded-full shadow">
+              <i className="fas fa-robot text-white text-2xl"></i>
             </div>
-            <span className="text-xl font-semibold text-indigo-700">CookBot</span>
+            <span className="text-2xl font-bold text-blue-700">CookBot</span>
           </div>
           {/* Chat Area */}
           <div className="flex-1 overflow-y-auto px-6 pb-4 pt-2 space-y-3">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
                 <div
-                  className={`rounded-2xl px-4 py-2 max-w-[75%] text-sm whitespace-pre-line ${
+                  className={`rounded-2xl px-6 py-4 max-w-[80%] whitespace-pre-line shadow-sm transition-all duration-200 animate-fadeInBubble leading-relaxed break-words hyphens-auto ${
                     msg.from === "bot"
-                      ? "bg-gray-100 text-gray-900"
-                      : "bg-indigo-600 text-white"
+                      ? "bg-white text-gray-900 border border-blue-100 text-base font-medium"
+                      : "bg-gradient-to-br from-blue-600 to-indigo-500 text-white border border-blue-200 text-[1.05rem] font-semibold"
                   }`}
                 >
                   {msg.text}
@@ -98,25 +98,42 @@ const CookBotInput = () => {
             ))}
           </div>
           {/* Input Area */}
-          <div className="px-6 py-4 bg-neutral-50 rounded-b-2xl flex items-center gap-2">
+          <div className="px-6 py-4 bg-white rounded-b-2xl flex items-center gap-2 border-t border-blue-100">
             <input
               type="text"
-              className="flex-1 px-4 py-2 rounded-full bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-sm"
-              placeholder="Type the message..."
+              className="flex-1 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 text-base"
+              placeholder="Type your message..."
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSend()}
             />
             <button
-              className="w-10 h-10 flex items-center justify-center bg-indigo-600 rounded-full text-white hover:bg-indigo-700 transition"
+              className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-500 rounded-full text-white hover:scale-105 hover:bg-blue-700 transition-all duration-200 shadow"
               onClick={handleSend}
               aria-label="Send message"
             >
-              <i className="fas fa-paper-plane"></i>
+              <i className="fas fa-paper-plane text-lg"></i>
             </button>
           </div>
         </div>
       )}
+      {/* Animations */}
+      <style>{`
+        @keyframes fadeInSlideUp {
+          0% { opacity: 0; transform: translateY(40px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeInSlideUp {
+          animation: fadeInSlideUp 0.4s cubic-bezier(.4,0,.2,1);
+        }
+        @keyframes fadeInBubble {
+          0% { opacity: 0; transform: scale(0.95); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+        .animate-fadeInBubble {
+          animation: fadeInBubble 0.25s cubic-bezier(.4,0,.2,1);
+        }
+      `}</style>
     </>
   );
 };
