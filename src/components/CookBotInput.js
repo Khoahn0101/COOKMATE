@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+// import Navbar from "./Navbar";
+import Button from "./Button";
+import { motion } from "framer-motion";
 
 const CookBotInput = () => {
   const [open, setOpen] = useState(false);
@@ -36,12 +39,16 @@ const CookBotInput = () => {
 
   return (
     <>
+      {/* <Navbar /> */}
       {/* Floating Button */}
-      <button
-        className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-16 h-16 text-white bg-gradient-to-br from-blue-600 to-indigo-500 rounded-full shadow-2xl cursor-pointer hover:scale-105 hover:shadow-indigo-400 transition-all duration-200"
+      <motion.button
+        className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-16 h-16 text-white bg-gradient-to-br from-orange-500 to-orange-400 rounded-full shadow-2xl cursor-pointer hover:scale-105 hover:shadow-orange-400 transition-all duration-200"
         onClick={() => setOpen(true)}
         aria-label="Open CookBot"
-        style={{ boxShadow: '0 8px 32px 0 rgba(67,24,209,0.25)' }}
+        style={{ boxShadow: '0 8px 32px 0 rgba(255,115,43,0.18)' }}
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -57,11 +64,16 @@ const CookBotInput = () => {
             d="M21 12c0 3.866-3.582 7-8 7a8.96 8.96 0 01-3.13-.54l-4.37 1.31a1 1 0 01-1.26-1.26l1.31-4.37A8.96 8.96 0 013 12c0-3.866 3.582-7 8-7s8 3.134 8 7z"
           />
         </svg>
-      </button>
+      </motion.button>
 
       {/* Chat Widget Panel */}
       {open && (
-        <div className="fixed bottom-6 right-6 z-50 w-96 max-w-full h-[500px] bg-gradient-to-br from-blue-50 to-white rounded-2xl shadow-2xl flex flex-col border border-blue-100 animate-fadeInSlideUp">
+        <motion.div
+          className="fixed bottom-6 right-6 z-50 w-96 max-w-full h-[500px] bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-2xl flex flex-col border border-orange-100 animate-fadeInSlideUp"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        >
           {/* Close Button */}
           <button
             className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-xl"
@@ -72,14 +84,14 @@ const CookBotInput = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          {/* Blue Sidebar */}
-          <div className="absolute left-0 top-0 h-full w-2 bg-gradient-to-b from-blue-600 to-indigo-500 rounded-l-2xl"></div>
+          {/* Orange Sidebar */}
+          <div className="absolute left-0 top-0 h-full w-2 bg-gradient-to-b from-orange-500 to-orange-400 rounded-l-2xl"></div>
           {/* Header */}
           <div className="flex items-center gap-3 px-6 pt-6 pb-2">
-            <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-500 rounded-full shadow">
+            <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-orange-500 to-orange-400 rounded-full shadow">
               <i className="fas fa-robot text-white text-2xl"></i>
             </div>
-            <span className="text-2xl font-bold text-blue-700">CookBot</span>
+            <span className="text-2xl font-bold text-orange-600">CookBot</span>
           </div>
           {/* Chat Area */}
           <div className="flex-1 overflow-y-auto px-6 pb-4 pt-2 space-y-3">
@@ -88,8 +100,8 @@ const CookBotInput = () => {
                 <div
                   className={`rounded-2xl px-6 py-4 max-w-[80%] whitespace-pre-line shadow-sm transition-all duration-200 animate-fadeInBubble leading-relaxed break-words hyphens-auto ${
                     msg.from === "bot"
-                      ? "bg-white text-gray-900 border border-blue-100 text-base font-medium"
-                      : "bg-gradient-to-br from-blue-600 to-indigo-500 text-white border border-blue-200 text-[1.05rem] font-semibold"
+                      ? "bg-white text-gray-900 border border-orange-100 text-base font-medium"
+                      : "bg-gradient-to-br from-orange-500 to-orange-400 text-white border border-orange-200 text-[1.05rem] font-semibold"
                   }`}
                 >
                   {msg.text}
@@ -98,24 +110,26 @@ const CookBotInput = () => {
             ))}
           </div>
           {/* Input Area */}
-          <div className="px-6 py-4 bg-white rounded-b-2xl flex items-center gap-2 border-t border-blue-100">
+          <div className="px-6 py-4 bg-white rounded-b-2xl flex items-center gap-2 border-t border-orange-100">
             <input
               type="text"
-              className="flex-1 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 text-base"
+              className="flex-1 px-4 py-2 rounded-full bg-orange-50 border border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-400 text-base"
               placeholder="Type your message..."
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSend()}
+              aria-label="Type your message"
             />
-            <button
-              className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-500 rounded-full text-white hover:scale-105 hover:bg-blue-700 transition-all duration-200 shadow"
+            <Button
+              className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-orange-500 to-orange-400 rounded-full text-white hover:scale-105 hover:bg-orange-600 transition-all duration-200 shadow"
               onClick={handleSend}
-              aria-label="Send message"
+              ariaLabel="Send message"
+              style={{ minWidth: 0, padding: 0 }}
             >
               <i className="fas fa-paper-plane text-lg"></i>
-            </button>
+            </Button>
           </div>
-        </div>
+        </motion.div>
       )}
       {/* Animations */}
       <style>{`

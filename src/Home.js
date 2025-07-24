@@ -1,11 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
+import { motion, useViewportScroll, useTransform } from "framer-motion";
+import { recipes as fallbackRecipes } from "./App";
 
 export default function Home() {
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [scrollY, setScrollY] = useState(0);
+  const [navSolid, setNavSolid] = useState(false);
+
+  const { scrollY: viewportScrollY } = useViewportScroll();
+  const heroRef = useRef(null);
+  const recipesSectionRef = useRef(null);
+
+  // Parallax scale and fade
+  const scale = useTransform(viewportScrollY, [0, 400], [1.2, 1]);
+  const opacity = useTransform(viewportScrollY, [0, 400], [1, 0.3]);
 
   // Recipe data (fallback if API fails)
   const fallbackRecipes = [
@@ -21,7 +33,7 @@ export default function Home() {
     {
       id: 2,
       title: "Pasta Carbonara",
-      image: "https://www.allrecipes.com/thmb/a_0Wyk_LLCtH-VPqg2uLD9I5Pk=/0x512/filters:no_upscale():max_bytes(150000):strip_icc()/11973-spaghetti-carbonara-ii-DDMFS-4x3-6edea51e421e4457ac0c3269f3be5157.jpg",
+      image: "https://www.marthastewart.com/thmb/S9xVtnWSHldvxPHKOxEq0bALG-k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/MSL-338686-spaghetti-carbonara-hero-3x2-69999-560b45d1dd9f4741b717176eff024839.jpeg",
       rating: 4.9,
       time: "15 mins",
       difficulty: "medium",
@@ -93,7 +105,7 @@ export default function Home() {
     {
       id: 10,
       title: "Lasagna",
-      image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80",
+      image: "https://assets.epicurious.com/photos/6508a14155b19af4200459c7/1:1/w_2900,h_2900,c_limit/Sausage-Cheese-Basil-Lasanga_RECIPE.jpg",
       rating: 4.7,
       time: "1 hr",
       difficulty: "hard",
@@ -102,7 +114,7 @@ export default function Home() {
     {
       id: 11,
       title: "Pad Thai",
-      image: "https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=800&q=80",
+      image: "https://www.seriouseats.com/thmb/gLZ3ZlKXVTGpgspZvvS8Afnw2TA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/20250214-SEA-PadThai-AmandaSuarez-hero-4251c730d61a40ba935f2d43153d6862.jpg",
       rating: 4.8,
       time: "15 mins",
       difficulty: "medium",
@@ -111,7 +123,7 @@ export default function Home() {
     {
       id: 12,
       title: "Butter Chicken",
-      image: "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=800&q=80",
+      image: "https://www.shemins.com/wp-content/uploads/2017/05/Shemins-Butter-Chicken-LR.jpg",
       rating: 4.9,
       time: "35 mins",
       difficulty: "medium",
@@ -120,7 +132,7 @@ export default function Home() {
     {
       id: 13,
       title: "Classic Burger",
-      image: "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=80",
+      image: "https://i0.wp.com/rhubarbandcod.com/wp-content/uploads/2022/06/The-Classic-Cheeseburger-1.jpg?fit=1500%2C1071&ssl=1",
       rating: 4.5,
       time: "15 mins",
       difficulty: "easy",
@@ -129,7 +141,7 @@ export default function Home() {
     {
       id: 14,
       title: "Vegetarian Chili",
-      image: "https://images.unsplash.com/photo-1504674900247-ec6b0b1b798e?auto=format&fit=crop&w=800&q=80",
+      image: "https://s23209.pcdn.co/wp-content/uploads/2022/10/211129_DAMN-DELICIOUS_Vegetarian-Chili_279.jpg",
       rating: 4.6,
       time: "40 mins",
       difficulty: "easy",
@@ -147,17 +159,22 @@ export default function Home() {
   ];
 
   useEffect(() => {
-    // Try to fetch from API first, fallback to static data
-    fetch("http://localhost:8000/recipes")
-      .then(res => res.json())
-      .then(data => {
-        setRecipes(data);
-        setFilteredRecipes(data);
-      })
-      .catch(() => {
-        setRecipes(fallbackRecipes);
-        setFilteredRecipes(fallbackRecipes);
-      });
+    const handleScroll = () => {
+      setNavSolid(window.scrollY > 60); // adjust threshold as needed
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    setRecipes(fallbackRecipes);
+    setFilteredRecipes(fallbackRecipes);
   }, []);
 
   const handleFilter = (filter) => {
@@ -167,7 +184,21 @@ export default function Home() {
     if (filter === 'all') {
       filtered = recipes;
     } else if (filter === 'quick') {
-      filtered = recipes.filter(recipe => parseInt(recipe.time) <= 20);
+      filtered = recipes.filter(recipe => {
+        // Handle both API data (prep_time + cooking_time) and fallback data (time)
+        if (recipe.prep_time && recipe.cooking_time) {
+          return (recipe.prep_time + recipe.cooking_time) <= 20;
+        } else if (recipe.time) {
+          // Extract number from time string like "15 mins" or "1 hr"
+          const timeStr = recipe.time.toLowerCase();
+          if (timeStr.includes('hr')) {
+            return parseInt(timeStr) * 60 <= 20;
+          } else {
+            return parseInt(timeStr) <= 20;
+          }
+        }
+        return false;
+      });
     } else if (filter === 'vegetarian') {
       filtered = recipes.filter(recipe => recipe.tags.includes('vegetarian') || recipe.tags.includes('vegan'));
     } else {
@@ -192,21 +223,48 @@ export default function Home() {
     }
   };
 
+  const scrollToRecipes = () => {
+    recipesSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      scrollToRecipes();
+    }
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
+      <header
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+          navSolid
+            ? "bg-black shadow-sm backdrop-blur"
+            : "bg-transparent shadow-none backdrop-blur-0"
+        }`}
+      >
+        <div className="container mx-auto px-4 py-4 transition-all duration-500">
           <div className="flex justify-between items-center">
             <div className="flex items-center">
-              <i className="fas fa-utensils text-3xl text-blue-600 mr-2"></i>
-              <h1 className="text-2xl font-bold text-gray-800">Cook<span className="text-blue-600">Mate</span></h1>
+              <img
+                src="/cookmate.jpg"
+                alt="Utensils"
+                className="w-10 h-10 mr-2 inline-block rounded-full cursor-pointer"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              />
+              <h1
+                className="text-2xl font-bold text-white cursor-pointer"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              >
+                Cook<span className="text-white">Mate</span>
+              </h1>
             </div>
             <div className="hidden md:flex items-center space-x-4">
-              <Link to="/upload" className="px-4 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition">
+              <Link to="/upload" className="px-4 py-2 rounded-full bg-orange-500 text-white hover:bg-orange-600 transition">
                 <i className="fas fa-plus mr-2"></i> Add Recipe
               </Link>
-              <Link to="/meal-planner" className="px-4 py-2 rounded-full bg-green-600 text-white hover:bg-green-700 transition">
+              <Link to="/meal-planner" className="px-4 py-2 rounded-full bg-orange-500 text-white hover:bg-orange-600 transition">
                 <i className="fas fa-calendar-alt mr-2"></i> Meal Planner
               </Link>
               <Link to="/login" className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
@@ -221,22 +279,64 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-12">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Discover Delicious Recipes</h2>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">Browse our collection of mouth-watering recipes from around the world</p>
-          
+      <section
+        className="
+          relative w-full
+          min-h-[500px]         // Mobile default
+          md:min-h-[700px]      // Medium screens (laptops)
+          xl:min-h-[900px]      // Extra large screens (desktops)
+          2xl:min-h-[100vh]      // Very large screens (80% of viewport height)
+          flex items-center justify-center
+        "
+      >
+        <img
+          src="https://static01.nyt.com/images/2024/04/29/dining/29best-restaurants-washington19-04/29best-restaurants-washington19-04-superJumbo.jpg"
+          alt="Hero background"
+          className="absolute inset-0 w-full h-full object-cover z-0"
+          style={{ filter: "brightness(0.7)" }}
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-10 z-10" />
+        <div className="relative z-20 w-full max-w-2xl mx-auto text-center px-4">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white drop-shadow">
+          Discover Culinary Excellence
+          </h2>
+          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto text-white drop-shadow">
+          Savor handpicked recipes inspired by the finest cuisines across the globe
+          </p>
           <div className="max-w-2xl mx-auto relative">
-            <div className="flex items-center w-full bg-white rounded-full shadow-lg">
-              <input 
-                type="text" 
-                placeholder="Search recipes..." 
+            <div
+              className="flex items-center w-full"
+              style={{
+                background: "transparent",
+                borderBottom: "2px solid rgba(255,255,255,0.3)",
+                borderRadius: "1.5rem",
+                padding: "0.25rem 0.5rem",
+                boxShadow: "0 2px 12px 0 rgba(0,0,0,0.08)",
+                backdropFilter: "blur(2px)",
+              }}
+            >
+              <input
+                type="text"
+                placeholder="Search recipes..."
                 value={searchTerm}
                 onChange={handleSearch}
-                className="flex-1 px-6 py-4 rounded-full bg-transparent border-none text-gray-800 focus:ring-0 focus:outline-none placeholder-gray-400 text-lg"
-                style={{ minWidth: 0 }}
+                onKeyDown={handleSearchKeyDown}
+                className="flex-1 px-6 py-4 bg-transparent border-none text-white placeholder-white/70 focus:ring-0 focus:outline-none text-lg"
+                style={{
+                  minWidth: 0,
+                  color: "#fff",
+                  textShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                }}
               />
-              <button className="flex items-center justify-center w-12 h-12 bg-blue-600 rounded-full mr-2 -ml-3 shadow hover:bg-blue-700 transition" aria-label="Search">
+              <button
+                onClick={scrollToRecipes}
+                className="flex items-center justify-center w-12 h-12 bg-orange-500 rounded-full mr-2 -ml-3 shadow hover:bg-orange-600 transition"
+                aria-label="Search"
+                style={{
+                  border: "none",
+                  outline: "none",
+                }}
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
                 </svg>
@@ -289,80 +389,64 @@ export default function Home() {
       </div>
 
       {/* Recipe Gallery */}
-      <main className="container mx-auto px-4 py-8">
+      <motion.main
+        ref={recipesSectionRef}
+        className="container mx-auto px-4 py-8"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.2 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
         <h2 className="text-2xl font-bold text-gray-800 mb-6">Popular Recipes</h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredRecipes.map(recipe => {
+          {filteredRecipes.map((recipe, idx) => {
             const difficultyClass = `difficulty-${recipe.difficulty}`;
-            
             return (
-              <div key={recipe.id} className="recipe-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer">
-                <Link to={`/recipe/${recipe.id}`}>
-                  <div className="relative overflow-hidden h-48">
-                    <img src={recipe.image} alt={recipe.title} className="w-full h-full object-cover recipe-image" />
-                    <div className="absolute top-2 right-2 bg-white rounded-full px-2 py-1 flex items-center shadow">
-                      <i className="fas fa-star text-yellow-400 mr-1"></i>
-                      <span className="text-sm font-semibold">{recipe.rating}</span>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-bold text-lg mb-2 text-gray-800">{recipe.title}</h3>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600 text-sm">
-                        <i className="far fa-clock mr-1"></i> {recipe.time}
+              <motion.div
+                key={recipe.id}
+                className="relative rounded-2xl overflow-hidden shadow-lg group cursor-pointer h-[450px] w-[350px] flex flex-col justify-end"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: idx * 0.05 }}
+              >
+                <Link to={`/recipe/${recipe.id}`} className="block h-full w-full">
+                  <img
+                    src={recipe.image_url || recipe.image}
+                    alt={recipe.title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10" />
+                  <div className="relative z-20 p-4 flex flex-col justify-end h-full">
+                    <h3 className="text-white text-xl font-bold mb-2 drop-shadow">{recipe.title}</h3>
+                    <div className="flex items-center justify-between text-white text-sm mb-2">
+                      <span className="flex items-center">
+                        <i className="fas fa-star text-yellow-400 mr-1"></i>
+                        {recipe.rating}
                       </span>
-                      <span className={`text-xs px-2 py-1 rounded-full ${difficultyClass} text-white`}>
+                      <span className="flex items-center">
+                        <i className="far fa-clock mr-1"></i> 
+                        {recipe.prep_time && recipe.cooking_time 
+                           ? `${Number(recipe.prep_time) + Number(recipe.cooking_time)} mins`
+                            : recipe.time
+                              }
+                      </span>
+                      <span className={`text-xs px-2 py-1 rounded-full ${difficultyClass} text-white bg-black bg-opacity-30`}>
                         {recipe.difficulty.charAt(0).toUpperCase() + recipe.difficulty.slice(1)}
                       </span>
                     </div>
                   </div>
                 </Link>
-              </div>
+              </motion.div>
             );
           })}
         </div>
-      </main>
+      </motion.main>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">CookMate</h3>
-              <p className="text-gray-400">Your culinary companion for delicious recipes and cooking inspiration.</p>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Explore</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition">Recipes</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition">Categories</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition">Chef's Picks</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Community</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition">Forums</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition">Events</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition">Blog</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Connect</h4>
-              <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-white transition text-xl"><i className="fab fa-facebook"></i></a>
-                <a href="#" className="text-gray-400 hover:text-white transition text-xl"><i className="fab fa-instagram"></i></a>
-                <a href="#" className="text-gray-400 hover:text-white transition text-xl"><i className="fab fa-pinterest"></i></a>
-                <a href="#" className="text-gray-400 hover:text-white transition text-xl"><i className="fab fa-youtube"></i></a>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
-            <p>&copy; 2025 CookMate. All rights reserved.</p>
-          </div>
-      </div>
-      </footer>
+      {/* REMOVE the following lines:
+      <footer className="bg-black text-white py-8"> ... </footer> */}
 
       <style jsx>{`
         .recipe-card:hover .recipe-image {
@@ -385,7 +469,7 @@ export default function Home() {
           box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
         }
         .filter-btn.active {
-          background-color: #3b82f6;
+          background-color: #f97316;
           color: white;
         }
       `}</style>

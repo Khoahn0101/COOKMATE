@@ -1,5 +1,5 @@
 // The exported code uses Tailwind CSS. Install Tailwind CSS in your dev environment to ensure all styles work.
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from "react-router-dom";
 import RecipeDetail from "./components/RecipeDetail";
 import MealPlanner from "./components/MealPlanner";
@@ -7,7 +7,10 @@ import CookBotInput from "./components/CookBotInput";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import UploadRecipe from "./components/UploadRecipe";
+import UserProfilePage from "./components/UserProfilePage";
 import Home from "./Home";
+import Footer from "./components/Footer";
+// import fallbackRecipes from "./fallbackData";
 
 const recipes = [
   {
@@ -454,7 +457,7 @@ const recipes = [
   {
     id: 14,
     title: "Vegetarian Chili",
-    image: "https://images.unsplash.com/photo-1504674900247-ec6b0b1b798e?auto=format&fit=crop&w=800&q=80",
+    image: "https://s23209.pcdn.co/wp-content/uploads/2022/10/211129_DAMN-DELICIOUS_Vegetarian-Chili_279.jpg",
     rating: "4.6",
     reviews: 85,
     prepTime: "15 mins",
@@ -516,14 +519,27 @@ const recipes = [
     }
   },
   
-  // Add more recipes here...
+//   // Add more recipes here...
 ];
+
+export { recipes };
 
 const RecipeDetailWrapper = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const recipe = recipes.find((r) => String(r.id) === id);
-  if (!recipe) return <div>Recipe not found</div>;
+  const [recipe, setRecipe] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    const found = recipes.find(r => String(r.id) === String(id));
+    setRecipe(found);
+    setLoading(false);
+  }, [id]);
+
+  if (loading) return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+  if (!recipe) return <div className="flex justify-center items-center min-h-screen">Recipe not found</div>;
+
   return <RecipeDetail recipe={recipe} onBack={() => navigate(-1)} />;
 };
 
@@ -540,8 +556,10 @@ const App = () => {
         <Route path="/recipe/:id" element={<RecipeDetailWrapper />} />
         <Route path="/meal-planner" element={<MealPlanner />} />
         <Route path="/upload" element={<UploadRecipe />} />
+        <Route path="/profile" element={<UserProfilePage />} />
       </Routes>
       <CookBotInput />
+      <Footer />
     </Router>
   );
 };
