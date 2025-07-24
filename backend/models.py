@@ -1,12 +1,19 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 class Recipe(BaseModel):
     id: int
     title: str
-    time: str
+    image_url: str  # đổi cho khớp DB
+    rating: Optional[float] = None
+    reviews: Optional[int] = 0
+    prep_time: str
+    cooking_time: str
     difficulty: str
-    image: str
+    servings: Optional[int] = 1
+    tags: Optional[List[str]] = []
+    description: Optional[str] = ""
     ingredients: List[str]
-    directions: List[str]
-    nutrition: dict
+    instructions: List[str]  # đổi tên cho khớp return
+    nutrition: Optional[dict] = {}
+

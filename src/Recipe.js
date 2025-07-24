@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { recipes as fallbackRecipes } from "./App";
 
 export default function RecipeDetail() {
   const { id } = useParams();
   const [recipe, setRecipe] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/recipes/${id}`)
-      .then(res => res.json())
-      .then(data => setRecipe(data));
+    const found = fallbackRecipes.find(r => String(r.id) === String(id));
+    setRecipe(found);
   }, [id]);
 
   if (!recipe) return <div className="container py-5">Loading...</div>;
@@ -29,7 +29,7 @@ export default function RecipeDetail() {
 
     <h4 className="mt-4">Directions</h4>
         <ol className="list-group list-group-numbered mb-3">
-        {recipe.directions.map((step, i) => (
+        {recipe.instructions.map((step, i) => (
             <li key={i} className="list-group-item">{step}</li>
         ))}
         </ol>
